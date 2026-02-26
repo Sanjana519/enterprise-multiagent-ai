@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enterprise Multi-Agent AI</title>
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #f4f6f9;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .input-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .agent-box {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .agent-header {
+            padding: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #eef2ff;
+        }
+
+        .agent-content {
+            padding: 15px;
+            display: none;
+            white-space: pre-wrap;
+        }
+
+        .agent-box.active .agent-content {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Enterprise Multi-Agent AI System</h1>
+
+<div class="container">
+
+    <div class="input-box">
+        <input type="text" id="query" placeholder="Enter your topic...">
+        <button onclick="runAgents()">Run</button>
+    </div>
+
+    <div id="agents"></div>
+
+</div>
+
+<script>
+    async function runAgents() {
+        const query = document.getElementById("query").value;
+
+        const response = await fetch(`http://127.0.0.1:8000/process?query=${query}`, {
+            method: "POST"
+        });
+
+        const data = await response.json();
+
+        const container = document.getElementById("agents");
+        container.innerHTML = "";
+
+        for (let key in data) {
+            const box = document.createElement("div");
+            box.className = "agent-box";
+
+            box.innerHTML = `
+                <div class="agent-header">${key.toUpperCase()} AGENT</div>
+                <div class="agent-content">${data[key]}</div>
+            `;
+
+            box.querySelector(".agent-header").onclick = () => {
+                box.classList.toggle("active");
+            };
+
+            container.appendChild(box);
+        }
+    }
+</script>
+
+</body>
+</html>

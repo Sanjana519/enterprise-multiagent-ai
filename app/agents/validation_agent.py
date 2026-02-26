@@ -1,10 +1,18 @@
-from .base_agent import BaseAgent
+from app.agents.base_agent import BaseAgent
 
 
 class ValidationAgent(BaseAgent):
+    async def run(self, input_data):
 
-    async def run(self, analysis_data):
-        response = await self.llm.invoke(
-            f"Validate and improve the following content:\n{analysis_data}"
-        )
-        return response.content
+        prompt = f"""
+        Validate and refine the following summary:
+
+        {input_data}
+
+        Ensure:
+        - Clarity
+        - Logical consistency
+        - Professional tone
+        """
+
+        return await self.llm.generate(prompt)
